@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-label="library-api">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6B2FB5"/>
+      <stop offset="100%" stop-color="#4A1E86"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="300" fill="url(#bg)"/>
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="140" fill="#ffffff" font-size="84" font-weight="700" letter-spacing="2">library-api</text>
+    <text x="600" y="195" fill="#EADCFB" font-size="30" font-weight="400">A clean Spring Boot REST API for managing books</text>
+    <text x="600" y="245" fill="#C9AEEF" font-size="22" font-weight="500" letter-spacing="1">Java 21 &#183; Spring Boot &#183; JPA &#183; H2 &#183; JUnit</text>
+  </g>
+</svg>
