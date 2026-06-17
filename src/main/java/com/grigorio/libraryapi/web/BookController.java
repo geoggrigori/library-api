@@ -33,8 +33,11 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> list(@RequestParam(required = false) Boolean available) {
-        return service.findAll(available);
+    public List<Book> list(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Boolean available) {
+        return service.search(title, author, available);
     }
 
     @GetMapping("/{id}")
