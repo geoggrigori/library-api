@@ -120,6 +120,55 @@ class BookControllerTest {
     }
 
     @Test
+    void listFilterByTitleSubstringCaseInsensitive() throws Exception {
+        persist("Clean Code", "Robert C. Martin", "1111111111", true);
+        persist("The Clean Coder", "Robert C. Martin", "2222222222", false);
+        persist("Refactoring", "Martin Fowler", "3333333333", true);
+
+        mockMvc.perform(get("/books").param("title", "clean"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    void listFilterByAuthorSubstringCaseInsensitive() throws Exception {
+        persist("Clean Code", "Robert C. Martin", "1111111111", true);
+        persist("Refactoring", "Martin Fowler", "2222222222", true);
+
+        mockMvc.perform(get("/books").param("author", "fowler"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].title", is("Refactoring")));
+    }
+
+    @Test
+    void listFilterByTitleAndAvailableCombined() throws Exception {
+        persist("Clean Code", "Robert C. Martin", "1111111111", true);
+        persist("The Clean Coder", "Robert C. Martin", "2222222222", false);
+        persist("Refactoring", "Martin Fowler", "3333333333", true);
+
+        mockMvc.perform(get("/books")
+                        .param("title", "clean")
+                        .param("available", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].title", is("Clean Code")));
+    }
+
+    @Test
+    void listFilterByAuthorAndAvailableCombined() throws Exception {
+        persist("Clean Code", "Robert C. Martin", "1111111111", true);
+        persist("The Clean Coder", "Robert C. Martin", "2222222222", false);
+
+        mockMvc.perform(get("/books")
+                        .param("author", "martin")
+                        .param("available", "false"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].title", is("The Clean Coder")));
+    }
+
+    @Test
     void updateReplacesBookFields() throws Exception {
         Book saved = persist("Old Title", "Old Author", "1111111111", true);
 
