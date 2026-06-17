@@ -1,5 +1,7 @@
 ![library-api banner](assets/banner.svg)
 
+[![CI](https://github.com/geoggrigori/library-api/actions/workflows/ci.yml/badge.svg)](https://github.com/geoggrigori/library-api/actions/workflows/ci.yml)
+
 # library-api
 
 ![Java](https://img.shields.io/badge/Java-21-007396?logo=openjdk&logoColor=white)
