@@ -16,6 +16,7 @@ A clean, well-tested Spring Boot REST API for managing a small library of books.
 
 - Full CRUD for books (`title`, `author`, `isbn`, `available`).
 - Optional `?available=true|false` filter when listing books.
+- Optional case-insensitive `?title=` and `?author=` substring search, combinable with `?available=`.
 - Borrow and return workflow, returning `409 Conflict` when a book is already borrowed.
 - Bean Validation (`@NotBlank`, `@Pattern` for the ISBN) with clean `400` JSON responses.
 - Consistent JSON error payloads for `400`, `404`, and `409` via a `@RestControllerAdvice`.
@@ -40,7 +41,7 @@ flowchart LR
 
 | Method | Path                  | Description                                  | Status codes              |
 |--------|-----------------------|----------------------------------------------|---------------------------|
-| GET    | `/books`              | List all books (optional `?available=` filter) | `200`                     |
+| GET    | `/books`              | List books (optional `?title=`, `?author=`, `?available=` filters) | `200`                     |
 | GET    | `/books/{id}`         | Get a book by id                             | `200`, `404`              |
 | POST   | `/books`              | Create a book                                | `201` (+ `Location`), `400` |
 | PUT    | `/books/{id}`         | Update an existing book                      | `200`, `400`, `404`       |
@@ -100,6 +101,12 @@ List books, only the available ones:
 curl http://localhost:8080/books?available=true
 ```
 
+Search by title and/or author (case-insensitive substring), combinable with `available`:
+
+```bash
+curl "http://localhost:8080/books?title=clean&author=martin&available=true"
+```
+
 Get a single book:
 
 ```bash
@@ -148,7 +155,7 @@ curl -i -X DELETE http://localhost:8080/books/1
 ./mvnw test
 ```
 
-The suite uses JUnit 5 and Spring Boot Test with MockMvc, covering CRUD, validation errors, missing-resource handling, the `available` filter, and the borrow/return flow including the conflict case.
+The suite uses JUnit 5 and Spring Boot Test with MockMvc, covering CRUD, validation errors, missing-resource handling, the `available`, `title`, and `author` search filters, and the borrow/return flow including the conflict case.
 
 ## License
 
