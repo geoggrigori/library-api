@@ -20,10 +20,29 @@ public class BookService {
     }
 
     public List<Book> findAll(Boolean available) {
-        if (available != null) {
-            return repository.findByAvailable(available);
+        return search(null, null, available);
+    }
+
+    /**
+     * Lists books optionally filtered by a case-insensitive title and/or author
+     * substring, combinable with the availability flag. Blank search terms are
+     * treated as absent.
+     */
+    public List<Book> search(String title, String author, Boolean available) {
+        String titleFilter = normalize(title);
+        String authorFilter = normalize(author);
+        if (titleFilter == null && authorFilter == null && available == null) {
+            return repository.findAll();
         }
-        return repository.findAll();
+        return repository.search(titleFilter, authorFilter, available);
+    }
+
+    private String normalize(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
     public Book findById(Long id) {
