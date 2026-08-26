@@ -1,162 +1,117 @@
-![library-api banner](assets/banner.svg)
+<!-- ══════════════════════════ TÍTULO ══════════════════════════ -->
+<div align="center">
+  <img src="docs/title-banner.svg" width="100%" alt="library-api"/>
+</div>
 
-[![CI](https://github.com/geoggrigori/library-api/actions/workflows/ci.yml/badge.svg)](https://github.com/geoggrigori/library-api/actions/workflows/ci.yml)
+<!-- ══════════════════════ IDIOMAS / LANGUAGES ══════════════════════ -->
+<div align="center">
+<a href="README.md"><img src="https://img.shields.io/badge/Português-1987F0?style=for-the-badge" alt="Português"/></a>
+<a href="README.en.md"><img src="https://img.shields.io/badge/English-555555?style=for-the-badge" alt="English"/></a>
+<a href="README.es.md"><img src="https://img.shields.io/badge/Español-555555?style=for-the-badge" alt="Español"/></a>
+</div>
 
-# library-api
+<div align="center">
+  <img src="assets/banner.svg" width="100%" alt="library-api"/>
+</div>
 
-![Java](https://img.shields.io/badge/Java-21-007396?logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-6DB33F?logo=springboot&logoColor=white)
-![H2](https://img.shields.io/badge/Database-H2-1E5C99)
-![JUnit](https://img.shields.io/badge/Tests-JUnit%205-25A162?logo=junit5&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-6B2FB5)
+<h1 align="center">library-api</h1>
+<p align="center"><em>API REST Spring Boot para gerenciar uma pequena biblioteca de livros</em></p>
+<p align="center"><strong>Controller → Service → Repository (JPA) → H2, com fluxo de empréstimo/devolução</strong></p>
 
-A clean, well-tested Spring Boot REST API for managing a small library of books. It demonstrates a classic layered architecture (controller, service, repository), JPA persistence on an in-memory H2 database, Bean Validation with a centralized error handler, and a borrow/return workflow with conflict detection.
+<div align="center">
+<a href="https://github.com/geoggrigori/library-api/actions/workflows/ci.yml"><img src="https://github.com/geoggrigori/library-api/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
+<img src="https://img.shields.io/badge/Java_21-007396?style=flat-square&logo=openjdk&logoColor=white" alt="java"/>
+<img src="https://img.shields.io/badge/Spring_Boot_4.1-6DB33F?style=flat-square&logo=springboot&logoColor=white" alt="spring"/>
+<img src="https://img.shields.io/badge/H2-1E5C99?style=flat-square" alt="h2"/>
+<img src="https://img.shields.io/badge/License-MIT-2E7D32?style=flat-square" alt="license"/>
+</div>
 
-## Features
+<div align="center">
+<a href="#sobre"><img src="https://img.shields.io/badge/▸_SOBRE-1987F0?style=for-the-badge" alt="sobre"/></a>
+<a href="#arquitetura"><img src="https://img.shields.io/badge/▸_ARQUITETURA-000000?style=for-the-badge" alt="arquitetura"/></a>
+<a href="#endpoints"><img src="https://img.shields.io/badge/▸_ENDPOINTS-1987F0?style=for-the-badge" alt="endpoints"/></a>
+<a href="#uso"><img src="https://img.shields.io/badge/▸_USO-000000?style=for-the-badge" alt="uso"/></a>
+</div>
 
-- Full CRUD for books (`title`, `author`, `isbn`, `available`).
-- Optional `?available=true|false` filter when listing books.
-- Optional case-insensitive `?title=` and `?author=` substring search, combinable with `?available=`.
-- Borrow and return workflow, returning `409 Conflict` when a book is already borrowed.
-- Bean Validation (`@NotBlank`, `@Pattern` for the ISBN) with clean `400` JSON responses.
-- Consistent JSON error payloads for `400`, `404`, and `409` via a `@RestControllerAdvice`.
-- In-memory H2 database with the H2 web console enabled.
-- Comprehensive integration tests with MockMvc.
+<br/>
 
-## Architecture
+> ☕ **Sem Maven local necessário** — o Maven Wrapper já vem incluso. `./mvnw spring-boot:run` e pronto.
+
+## Sobre
+
+API REST Spring Boot limpa e bem testada para gerenciar uma pequena biblioteca de livros. Demonstra uma arquitetura em camadas clássica (controller, service, repository), persistência JPA em banco H2 em memória, Bean Validation com tratamento de erro centralizado, e um fluxo de empréstimo/devolução com detecção de conflito.
+
+**Destaques:**
+- CRUD completo para livros (`title`, `author`, `isbn`, `available`).
+- Filtro opcional `?available=true|false` e busca por `?title=`/`?author=` (substring, case-insensitive).
+- Fluxo de empréstimo e devolução, retornando `409 Conflict` quando o livro já está emprestado.
+- Bean Validation com respostas JSON `400` limpas.
+- Payloads de erro JSON consistentes pra `400`, `404` e `409` via `@RestControllerAdvice`.
+- Console web do H2 habilitado.
+- Testes de integração abrangentes com MockMvc.
+
+## Arquitetura
 
 ```mermaid
 flowchart LR
-    Client[Client] -->|HTTP/JSON| Controller[BookController]
+    Client[Cliente] -->|HTTP/JSON| Controller[BookController]
     Controller --> Service[BookService]
     Service --> Repository[BookRepository]
-    Repository --> DB[(H2 in-memory)]
+    Repository --> DB[(H2 em memória)]
 
-    Controller -. validation error .-> Advice[GlobalExceptionHandler]
+    Controller -. erro de validação .-> Advice[GlobalExceptionHandler]
     Service -. not found / conflict .-> Advice
-    Advice -->|clean JSON 400/404/409| Client
+    Advice -->|JSON limpo 400/404/409| Client
 ```
 
 ## Endpoints
 
-| Method | Path                  | Description                                  | Status codes              |
-|--------|-----------------------|----------------------------------------------|---------------------------|
-| GET    | `/books`              | List books (optional `?title=`, `?author=`, `?available=` filters) | `200`                     |
-| GET    | `/books/{id}`         | Get a book by id                             | `200`, `404`              |
-| POST   | `/books`              | Create a book                                | `201` (+ `Location`), `400` |
-| PUT    | `/books/{id}`         | Update an existing book                      | `200`, `400`, `404`       |
-| DELETE | `/books/{id}`         | Delete a book                                | `204`, `404`              |
-| POST   | `/books/{id}/borrow`  | Borrow a book (sets `available=false`)       | `200`, `404`, `409`       |
-| POST   | `/books/{id}/return`  | Return a book (sets `available=true`)        | `200`, `404`              |
+| Método | Rota | Descrição | Status |
+|---|---|---|---|
+| GET | `/books` | Lista livros (filtros `?title=`, `?author=`, `?available=`) | `200` |
+| GET | `/books/{id}` | Busca um livro por id | `200`, `404` |
+| POST | `/books` | Cria um livro | `201` (+ `Location`), `400` |
+| PUT | `/books/{id}` | Atualiza um livro existente | `200`, `400`, `404` |
+| DELETE | `/books/{id}` | Remove um livro | `204`, `404` |
+| POST | `/books/{id}/borrow` | Empresta um livro (`available=false`) | `200`, `404`, `409` |
+| POST | `/books/{id}/return` | Devolve um livro (`available=true`) | `200`, `404` |
 
-## Getting started
+## Uso
 
-Requirements: JDK 21. No local Maven install is needed — the Maven Wrapper is included.
+Requisito: JDK 21. Não precisa de Maven instalado — o wrapper já vem incluso.
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-The API starts on `http://localhost:8080`.
+API em `http://localhost:8080`. Console H2 em `http://localhost:8080/h2-console` (JDBC `jdbc:h2:mem:librarydb`, user `sa`, senha vazia).
 
-### H2 console
-
-The H2 web console is available at `http://localhost:8080/h2-console`.
-Use JDBC URL `jdbc:h2:mem:librarydb`, user `sa`, and an empty password.
-
-## API examples
-
-Create a book (returns `201` with a `Location` header):
-
+**Exemplos:**
 ```bash
+# Criar um livro (retorna 201 + Location)
 curl -i -X POST http://localhost:8080/books \
   -H "Content-Type: application/json" \
   -d '{"title":"Clean Code","author":"Robert C. Martin","isbn":"9780132350884"}'
-```
 
-Validation failure (returns `400` with field errors):
+# Emprestar
+curl -X POST http://localhost:8080/books/1/borrow
 
-```bash
-curl -i -X POST http://localhost:8080/books \
-  -H "Content-Type: application/json" \
-  -d '{"title":"","author":"","isbn":"abc"}'
-```
-
-```json
-{
-  "status": 400,
-  "error": "Bad Request",
-  "message": "Validation failed",
-  "fieldErrors": {
-    "title": "title is required",
-    "author": "author is required",
-    "isbn": "isbn must contain 10 to 17 digits or dashes"
-  }
-}
-```
-
-List books, only the available ones:
-
-```bash
-curl http://localhost:8080/books?available=true
-```
-
-Search by title and/or author (case-insensitive substring), combinable with `available`:
-
-```bash
+# Buscar por título/autor (combinável com available)
 curl "http://localhost:8080/books?title=clean&author=martin&available=true"
 ```
 
-Get a single book:
-
-```bash
-curl http://localhost:8080/books/1
-```
-
-Update a book:
-
-```bash
-curl -X PUT http://localhost:8080/books/1 \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Clean Code","author":"Robert C. Martin","isbn":"978-0132350884"}'
-```
-
-Borrow a book:
-
-```bash
-curl -X POST http://localhost:8080/books/1/borrow
-```
-
-Borrowing an already-borrowed book returns `409`:
-
-```json
-{
-  "status": 409,
-  "error": "Conflict",
-  "message": "Book with id 1 is already borrowed"
-}
-```
-
-Return a book:
-
-```bash
-curl -X POST http://localhost:8080/books/1/return
-```
-
-Delete a book (returns `204`):
-
-```bash
-curl -i -X DELETE http://localhost:8080/books/1
-```
-
-## Running tests
-
+**Testes:**
 ```bash
 ./mvnw test
 ```
+JUnit 5 + Spring Boot Test com MockMvc, cobrindo CRUD, erros de validação, recursos ausentes, filtros de busca, e o fluxo de empréstimo/devolução incluindo o caso de conflito.
 
-The suite uses JUnit 5 and Spring Boot Test with MockMvc, covering CRUD, validation errors, missing-resource handling, the `available`, `title`, and `author` search filters, and the borrow/return flow including the conflict case.
+## Licença
 
-## License
+[MIT](LICENSE).
 
-Released under the [MIT License](LICENSE). Copyright (c) 2026 Geovana Grigorio.
+<div align="center">
+  <img src="https://file.loading.io/color/feature/thumb/Blues-8.png?" width="100%" height="10px" alt="divider"/>
+</div>
+
+<p align="center"><sub>Desenvolvido por <strong><a href="https://github.com/geoggrigori">Grigori</a></strong> · 2026</sub></p>
