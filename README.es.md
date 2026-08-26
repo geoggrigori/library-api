@@ -10,10 +10,6 @@
 <a href="README.es.md"><img src="https://img.shields.io/badge/Español-1987F0?style=for-the-badge" alt="Español"/></a>
 </div>
 
-<div align="center">
-  <img src="assets/banner.svg" width="100%" alt="library-api"/>
-</div>
-
 <h1 align="center">library-api</h1>
 <p align="center"><em>API REST Spring Boot para gestionar una pequeña biblioteca de libros</em></p>
 <p align="center"><strong>Controller → Service → Repository (JPA) → H2, con flujo de préstamo/devolución</strong></p>
