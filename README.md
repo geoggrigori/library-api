@@ -14,10 +14,6 @@
 
 <br/>
 
-<h1 align="center">library-api</h1>
-<p align="center"><em>API REST Spring Boot para gerenciar uma pequena biblioteca de livros</em></p>
-<p align="center"><strong>Controller → Service → Repository (JPA) → H2, com fluxo de empréstimo/devolução</strong></p>
-
 <div align="center">
 <a href="https://github.com/geoggrigori/library-api/actions/workflows/ci.yml"><img src="https://github.com/geoggrigori/library-api/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
 <img src="https://img.shields.io/badge/Java_21-007396?style=flat-square&logo=openjdk&logoColor=white" alt="java"/>
