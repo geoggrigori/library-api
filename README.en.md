@@ -16,8 +16,6 @@
 
 [![CI](https://github.com/geoggrigori/library-api/actions/workflows/ci.yml/badge.svg)](https://github.com/geoggrigori/library-api/actions/workflows/ci.yml)
 
-# library-api
-
 ![Java](https://img.shields.io/badge/Java-21-007396?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-6DB33F?logo=springboot&logoColor=white)
 ![H2](https://img.shields.io/badge/Database-H2-1E5C99)
